@@ -1,5 +1,7 @@
 import React from 'react';
 import WeekBox from '../WeekBox/WeekBox';
+import WeekTitleBar from '../WeekTitleBar/WeekTitleBar';
+import WeekFooterBar from '../WeekFooterBar/WeekFooterBar';
 
 const getCurrentWeekNumber = () => {
   const now = new Date();
@@ -9,19 +11,18 @@ const getCurrentWeekNumber = () => {
 };
 
 const WeekGrid: React.FC = () => {
-  console.log(typeof getCurrentWeekNumber())
   const totalWeeks = 52; // Or 51 depending on the year
   const currentWeekNumber = getCurrentWeekNumber();
 
-   // Create an array of week numbers
-   const weeks = Array.from({ length: totalWeeks }, (_, index) => {
+  // Create an array of week numbers
+  const weeks = Array.from({ length: totalWeeks }, (_, index) => {
     const weekNumber = index + 1;
     const isPassed = weekNumber < currentWeekNumber;
     const isCurrentWeek = weekNumber === currentWeekNumber;
 
 
     return (
-      <WeekBox 
+      <WeekBox
         key={weekNumber}
         weekNumber={weekNumber}
         isPassed={isPassed}
@@ -31,12 +32,15 @@ const WeekGrid: React.FC = () => {
   });
 
   return (
-    <div className="week-grid-container">
-      <h2 className="week-grid-title">Weeks of {new Date().getFullYear()}</h2>
-      <div className="week-grid">
-        {weeks}
+    <>
+      <WeekTitleBar />
+      <div className="week-grid-container">
+        <div className="week-grid">
+          {weeks}
+        </div>
       </div>
-    </div>
+      <WeekFooterBar />
+    </>
   );
 };
 
