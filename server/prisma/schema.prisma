@@ -4,6 +4,8 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +13,57 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int     @id @default(autoincrement())
+  googleId      String  @unique // Google account ID
+  email         String  @unique
+  name          String?
+  profilePicture String? // URL of the profile picture
+  weeks         Week[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Week {
+  id        Int     @id @default(autoincrement())
+  weekNumber Int
+  emoji     String
+  events    Event[]
+  targets   Target[] @relation(references: [order]) // Ordered relation
+  notes     Note[]
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Event {
+  id        Int     @id @default(autoincrement())
+  title     String
+  description String?
+  weekId    Int
+  week      Week     @relation(fields: [weekId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Target {
+  id        Int     @id @default(autoincrement())
+  description String
+  order     Int     // Used to maintain the order of the targets
+  weekId    Int
+  week      Week     @relation(fields: [weekId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Note {
+  id        Int     @id @default(autoincrement())
+  content   String
+  weekId    Int
+  week      Week     @relation(fields: [weekId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
